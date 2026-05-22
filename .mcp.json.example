@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "unity": {
+      "command": "node",
+      "args": ["./unity-mcp-bridge/server/build/index.js"]
+    }
+  }
+}

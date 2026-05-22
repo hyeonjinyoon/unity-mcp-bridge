@@ -1,0 +1,20 @@
+# Node
+node_modules/
+server/build/
+server/node_modules/
+
+# Local MCP overrides
+.unity-mcp-url
+.unity-mcp-project
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Unity meta files inside the package are tracked, but consumer projects
+# generate their own Library/Temp folders we never see.
