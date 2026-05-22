@@ -64,6 +64,23 @@ function findUnityProjectIn(root: string, maxDepth: number): string | null {
   return null;
 }
 
+// Allows the server to be cloned inside a Unity project (e.g. <UnityProject>/unity-mcp-bridge/
+// shipping the server). After failing the child scan, walk up a few ancestors so that the
+// containing Unity project is picked up instead of falling back to an unrelated Editor.
+function findUnityProjectInOrAncestors(root: string): string | null {
+  const fromSelf = findUnityProjectIn(root, 3);
+  if (fromSelf) return fromSelf;
+
+  let current = root;
+  for (let i = 0; i < 4; i++) {
+    const parent = path.dirname(current);
+    if (parent === current) break;
+    if (isUnityProject(parent)) return parent;
+    current = parent;
+  }
+  return null;
+}
+
 function readProjectHint(): string | null {
   const filePath = path.resolve(WORKSPACE_ROOT, PROJECT_HINT_FILENAME);
   try {
@@ -92,7 +109,7 @@ function resolveExpectedProjectPath(): ProjectLookup {
     return { path: cachedProjectPath, enforceMatch: false };
   }
 
-  const found = findUnityProjectIn(WORKSPACE_ROOT, 3);
+  const found = findUnityProjectInOrAncestors(WORKSPACE_ROOT);
   if (found) {
     cachedProjectPath = found;
     return { path: found, enforceMatch: false };

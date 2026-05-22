@@ -54,7 +54,11 @@ namespace UnityMcpBridge.Editor
                 try
                 {
                     _listener = new HttpListener();
-                    _listener.Prefixes.Add($"http://localhost:{port}/");
+                    // "localhost" can resolve to IPv6-only on some Windows hosts, leaving the
+                    // server (which connects via 127.0.0.1) unable to reach the listener.
+                    // Bind to IPv4 explicitly so connection succeeds regardless of the OS's
+                    // localhost resolution order.
+                    _listener.Prefixes.Add($"http://127.0.0.1:{port}/");
                     _listener.Start();
                     _port = port;
                     _running = true;
